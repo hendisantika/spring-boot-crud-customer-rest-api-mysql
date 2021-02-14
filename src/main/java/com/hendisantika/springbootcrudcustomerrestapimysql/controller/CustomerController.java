@@ -9,14 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,6 +52,15 @@ public class CustomerController {
             customerRepository.save(customer);
             return ResponseEntity.ok(customer);
         }).orElseThrow(() -> new ResourceNotFoundException("Customer [customerId=" + customerId + "] can't be found"));
+    }
+
+    @DeleteMapping(value = "{customerId}")
+    public ResponseEntity<?> deleteCustomer(@PathVariable Long customerId) {
+        return customerRepository.findById(customerId).map(customer -> {
+                    customerRepository.delete(customer);
+                    return ResponseEntity.ok().build();
+                }
+        ).orElseThrow(() -> new ResourceNotFoundException("Customer [customerId=" + customerId + "] can't be found"));
     }
 
 }
